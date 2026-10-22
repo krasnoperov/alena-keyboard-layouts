@@ -1,0 +1,11 @@
+{
+  "name": "multilingual-mac-keyboard-demo",
+  "private": true,
+  "scripts": {
+    "build": "python3 tools/build-demo.py",
+    "deploy": "npm run build && wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "4.152.0"
+  }
+}

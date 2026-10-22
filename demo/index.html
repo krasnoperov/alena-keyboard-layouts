@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Multilingual Mac Keyboard Layouts — English, Spanish, Catalan, Portuguese, French, Italian and Russian</title>
+  <meta name="description" content="English, Spanish, Catalan, Portuguese, French, Italian and Russian on one US keyboard. Explore native Mac layouts with consistent punctuation.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body><main>
+  <nav><strong>Multilingual Mac Keyboard Layouts</strong><a href="https://github.com/krasnoperov/macos-multilingual-layouts">GitHub ↗</a></nav>
+  <header>
+    <p class="eyebrow">English · Español · Català · Português · Français · Italiano · Русский</p>
+    <h1>One keyboard. Fewer decisions.</h1>
+    <p>Keep shared symbols in place. Switch languages, not habits.</p>
+  </header>
+  <div class="controls">
+    <fieldset id="variants"><legend>Accent style</legend><button data-value="direct" aria-pressed="true">Direct</button><button data-value="dead-keys" aria-pressed="false">Dead Keys</button></fieldset>
+    <fieldset id="languages"><legend>Input source</legend><button data-value="English" aria-pressed="true">Latin</button><button data-value="Russian" aria-pressed="false">Russian</button></fieldset>
+    <p class="interaction-hint">Click keys and modifiers below.<br> Globe switches languages.</p>
+  </div>
+  <section class="key-readout" aria-label="Last key and output">
+    <div class="press"><small id="press-source">LAST INPUT</small><div id="pressed-key">—</div></div>
+    <span class="readout-arrow" aria-hidden="true">→</span>
+    <div class="result"><small>OUTPUT</small><output id="pressed-output" aria-live="polite">—</output></div>
+    <label class="typing-test" for="typing-test">Type with your Mac layout<input id="typing-test" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Type here…"></label>
+  </section>
+  <div class="composition" aria-live="polite"><span id="composition-status">Click an amber key to explore an accent.</span><button id="cancel-composition" hidden>Cancel</button></div>
+  <section class="board" aria-label="Keyboard diagram">
+    <div class="board-top"><strong id="state">Loading layouts…</strong><span>Magic Keyboard · US ANSI</span></div>
+    <div id="keyboard"></div>
+  </section>
+  <div class="legend"><span><i class="dot shared"></i><span id="green-legend">Shared symbols</span></span><span><i class="dot dead"></i>Dead key</span></div>
+  <section class="next-actions" aria-label="Get a layout or make your own">
+    <article class="action-card"><h2>Direct input</h2><p>⌥ E → é<br>Ask your agent to install and configure it.</p><button class="copy-prompt" data-variant="direct">Copy setup prompt</button></article>
+    <article class="action-card"><h2>Dead keys</h2><p>⌥ E, then E → é<br>Ask your agent to install and configure it.</p><button class="copy-prompt" data-variant="dead-keys">Copy setup prompt</button></article>
+    <article class="action-card custom" id="make-it-yours"><h2>Make it yours</h2><p>Your languages. Your habits.<br>Design a layout with your agent.</p><button class="copy-prompt" data-variant="custom">Copy design prompt</button></article>
+  </section>
+  <footer>
+    <a href="https://github.com/krasnoperov/macos-multilingual-layouts#install-a-ready-made-layout">How to install</a>
+    <a href="https://github.com/krasnoperov/macos-multilingual-layouts/blob/main/docs/key-guide.md">Key guide</a>
+    <a id="layout-source" href="https://github.com/krasnoperov/macos-multilingual-layouts/tree/main/layouts">Layout XML</a>
+  </footer>
+<dialog id="prompt-dialog" aria-labelledby="prompt-title"><h2 id="prompt-title">Copy this prompt to your agent</h2><textarea id="prompt-text" readonly aria-label="Setup prompt"></textarea><form method="dialog"><button>Close</button></form></dialog>
+</main><script src="layout-parser.js"></script><script src="viewer.js"></script></body>
+</html>

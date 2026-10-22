@@ -1,0 +1,108 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Typing demonstration</title><style>
+*{box-sizing:border-box}body{margin:0;background:#f6f5ef;color:#20352e;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}.canvas{width:1040px;height:970px;padding:28px 30px;overflow:hidden}.top{display:flex;justify-content:space-between;color:#65766d;font-size:13px;letter-spacing:.04em}.top span:last-child{font-size:11px}h1{font-size:36px;letter-spacing:-.035em;font-weight:650;margin:16px 0 18px;line-height:1.1}.messages{border:1px solid #d9dfd7;border-radius:14px;padding:13px 20px;background:#fffef9}.message{height:46px;display:flex;align-items:center;gap:18px;white-space:nowrap}.label{width:95px;font-size:12px;color:#79847b}.message p{margin:0;font-size:27px;letter-spacing:-.015em;color:#79847b}.message.active p{color:#20352e}.message.active .label{color:#185c45;font-weight:600}.cursor{display:inline-block;background:#185c45;width:2px;height:27px;vertical-align:-4px;margin-left:2px}.action{height:83px;display:grid;grid-template-columns:170px 44px 50px 1fr;align-items:center;gap:10px}.keys{font-size:23px;letter-spacing:.03em}.arrow{color:#8b958b;font-size:22px}.output{font-size:30px;color:#185c45}.note{font-size:16px;color:#65766d;text-align:right;line-height:1.4}.board{padding:12px 10px 10px;border:1px solid #d9dfd7;border-radius:20px;background:#eeeee9}.board-title{display:flex;justify-content:space-between;height:22px;padding:0 5px;color:#65766d;font-size:11px}#keyboard{width:100%;aspect-ratio:1084/446}svg{display:block;width:100%;height:auto}.bottom{display:flex;justify-content:space-between;margin-top:15px;font-size:13px;color:#65766d}.bottom strong{color:#185c45;font-weight:500}.hidden{display:none}.story-pressed>path:nth-child(2){fill:#dcece2;stroke:#185c45;stroke-width:2.2}.story-mod>path:nth-child(2){fill:#185c45;stroke:#185c45}.story-mod text{fill:white}.story-mod g{stroke:white}
+.achievements{height:64px;display:grid;grid-template-columns:repeat(3,1fr);gap:6px 9px;margin-bottom:12px}.achievement{border:1px solid #d9dfd7;border-radius:8px;padding:5px 10px;font-size:12px;color:#8b958b;white-space:nowrap;background:#f1f1ea}.achievement.unlocked{border-color:#b4d1bd;color:#185c45;background:#e3eee6}.achievement.fresh{border:2px solid #185c45;padding:4px 9px}.number-echo{font-size:14px;letter-spacing:.12em;color:#65766d}.number-echo.verified{color:#185c45;font-weight:650}.number-row>path:nth-child(2){stroke:#b78a3f;stroke-width:2}.endcard{position:absolute;inset:110px 35px 35px;border-radius:18px;background:#f6f5eff5;display:none;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:45px;z-index:4}.endcard h2{font-size:40px;line-height:1.25;letter-spacing:-.03em;margin:0 0 25px}.endcard p{font-size:23px;line-height:1.5;max-width:700px;margin:0 0 20px;color:#65766d}.endcard strong{font-size:19px;color:#185c45}.canvas{position:relative}.short .canvas{height:832px}.short .message:not(.active){display:none}.short .messages{height:74px;display:flex;align-items:center}.short .message{width:100%}.short .canvas h1{font-size:32px}.short .endcard{inset:120px 35px 35px}.short .endcard h2{font-size:35px}</style></head><body><div class="canvas">
+<div class="top"><span>MULTILINGUAL MAC KEYBOARD LAYOUTS</span><span>Illustrated typing · Direct variant</span></div>
+<h1>One keyboard. Four messages.</h1>
+<div class="messages"><div class="message" id="message-0"><span class="label">English</span><p></p></div><div class="message" id="message-1"><span class="label">Español</span><p></p></div><div class="message" id="message-2"><span class="label">Français</span><p></p></div><div class="message" id="message-3"><span class="label">Русский</span><p></p></div></div>
+<div class="action"><div class="keys" id="story-keys">US QWERTY</div><div class="arrow">→</div><div class="output" id="story-output"></div><div class="note" id="story-note">Letters stay familiar.<br>Extra characters live behind Option.</div></div>
+<div class="achievements" id="achievements"></div>
+<div class="board"><div class="board-title"><span id="story-source">Latin · English Es</span><span class="number-echo" id="number-echo">⇧  ! @ # $ % ^ &amp; * ( )</span></div><div id="keyboard"></div></div>
+<div class="bottom"><span>⌥ = Option</span><strong id="story-bottom">English and Spanish share one input source.</strong><span>keyboard.krasnoperov.me</span></div>
+<div class="endcard" id="endcard"><h2>Hey agent, make my keyboard<br>work like this.</h2><p>Ask about my languages and habits.<br>Keep the keys I know. Help me type the rest.</p><strong>Copy the design prompt at keyboard.krasnoperov.me</strong></div></div>
+<div class="hidden"><div id="variants"></div><div id="languages"></div><input id="typing-test"><div id="press-source"></div><div id="pressed-key"></div><div id="pressed-output"></div><div id="green-legend"></div><div id="composition-status"></div><button id="cancel-composition"></button><a id="layout-source"></a><div id="state"></div></div>
+<script src="layout-parser.js"></script><script src="viewer.js"></script><script>
+async function prepareStory(){
+await layoutsReady;
+const short=new URLSearchParams(location.search).has('short');
+document.body.classList.toggle('short',short);
+if(short)document.querySelector('h1').textContent='Three messages. Familiar keys.';
+const messages=short?["I'm at the café, battery 100%.", "¡Mañana sí!", "", "Заряд 100%, всё готово."]:["I'm at O'Connor's café, with José & Ana. Battery: 100%.", "¡Mañana sí! Café con Lucía y José, a las seis.", "J'ai réservé une table, près de l'entrée.", "Всё готово, ждём тебя. Заряд 100%, возьмёшь ещё кофе?"];
+const badges=[['apostrophe',"' stays literal"],['accent','é · Option + E'],['punctuation',', . · same gestures'],['numbers','100% · same Shift row'],['compose','è · compose an accent'],['cyrillic','ё · Option + Е']].filter(([id])=>!short||id!=='compose');
+const earned=new Set();
+const storyFrames=[];const typed=['','','',''];
+function add(frame){storyFrames.push({...frame,texts:[...typed],earned:[...earned]});}
+const codes=[...rows.flat().filter(k=>typeof k[0]==='number').map(k=>k[0]),49];
+const physical=c=>rows.flat().find(k=>k[0]===c)?.[1]||'Space';
+function chord(layer,code){return (layer==='optionShift'?'⌥ ⇧ ':layer==='option'?'⌥ ':layer==='shift'?'⇧ ':'')+physical(code);}
+function unlock(id){if(earned.has(id))return null;earned.add(id);return id;}
+const beat=short?135:145;
+add({scene:0,layer:'base',duration:500,keys:'US QWERTY',note:'Extra characters, on familiar keys.'});
+for(let scene=0;scene<4;scene++){
+ if(!messages[scene])continue;
+ const lang=scene===3?'Russian':'English';const map=LAYOUTS.direct[lang];
+ if(scene===1||scene===2)add({scene,layer:'base',duration:short?300:450,keys:'Same layout',note:scene===1?'English → Spanish. No input-source switch.':'Spanish → French. Still the same source.'});
+ if(scene===3){
+  add({scene,layer:'base',duration:650,globe:true,keys:'Globe',output:'RU',note:'The letters change. The US number row stays.'});
+  add({scene,layer:'shift',duration:short?500:950,keys:'⇧',output:'% &',note:'Same number keys. Same Shift symbols.',numbers:true});
+ }
+ for(const char of messages[scene]){
+  let layer='base',code,keys,note='',duration=beat,fresh=null;
+  if(char===','||char==='.'){
+   layer='option';code=char===','?43:47;keys=chord(layer,code);fresh=unlock('punctuation');
+   note=char===','?'Same comma gesture, in every language.':'Same period gesture, in every language.';
+  }else{
+   for(const name of ['base','shift','option','optionShift']){code=codes.find(c=>map[name][c]?.text===char&&!map[name][c].dead);if(code!==undefined){layer=name;break;}}
+   if(code===undefined){
+    let route;
+    for(const deadCode of [50,38,40,13]){
+     const state=map.option[deadCode]?.next;if(!state)continue;
+     for(const nextLayer of ['base','shift']){const nextCode=codes.find(c=>map[nextLayer][c]?.compositions?.[state]?.text===char);if(nextCode!==undefined){route={deadCode,nextLayer,nextCode};break;}}
+     if(route)break;
+    }
+    if(!route)throw Error('No mapping for '+char);
+    add({scene,layer:'option',code:route.deadCode,keys:chord('option',route.deadCode),output:map.option[route.deadCode].text+' …',note:'Prepare the accent.',duration:short?240:350});
+    code=route.nextCode;layer=route.nextLayer;keys=chord(layer,code);typed[scene]+=char;fresh=unlock('compose');
+    add({scene,layer,code,keys,output:char,note:'Release Option, then type the letter.',fresh,duration:beat+(fresh?(short?350:600):0)});continue;
+   }
+   keys=char===' '?'Space':(layer==='shift'?'⇧ ':layer==='optionShift'?'⌥ ⇧ ':layer==='option'?'⌥ ':'')+(lang==='Russian'&&map.base[code]?.text?.match(/[а-яё]/i)?map.base[code].text.toUpperCase():physical(code));
+   if(layer.startsWith('option'))note='Extra characters live behind Option.';
+   if(char==='é'){fresh=unlock('accent');note='Option + E → é. The same E key.';}
+   if(char==='ё'){fresh=unlock('cyrillic');note='Option + Е → ё, in the Russian source.';}
+   if(char==="'"){fresh=unlock('apostrophe');note='A normal apostrophe. No dead key.';}
+   if(char==='%'){fresh=unlock('numbers');note='Shift + 5 → %. Same in Latin and Cyrillic.';}
+  }
+  const result=map[layer][code];if(result.text!==char||result.dead)throw Error('Wrong initial mapping '+char);
+  typed[scene]+=result.text;
+  add({scene,layer,code,keys,output:char===' '?'':result.text,note,fresh,numbers:char==='%',duration:duration+(fresh?(short?350:600):0)});
+ }
+ add({scene,layer:'base',duration:short?220:500,keys:'',note:scene<2?'One Latin source. No language switch.':scene===2?'One Latin source. Three languages.':'Cyrillic letters. The same punctuation and Shift row.'});
+}
+add({scene:3,layer:'shift',duration:short?500:950,keys:'⇧ 5',output:'%',note:'US Shift symbols, in both sources.',numbers:true});
+add({scene:3,layer:'base',duration:short?1050:2300,keys:'',note:'',endcard:true});
+window.storyBadges=badges;
+window.storyFrames=storyFrames;
+window.showStoryFrame=showStoryFrame;
+function showStoryFrame(index){
+ const f=storyFrames[index];variant='direct';language=f.scene===3?'Russian':'English';selected=f.layer;held=null;composition=null;render();
+ for(let n=0;n<4;n++){
+  const row=document.getElementById('message-'+n);row.classList.toggle('active',n===f.scene);const p=row.querySelector('p');p.textContent=f.texts[n];
+  if(n===f.scene&&!f.summary){const c=document.createElement('span');c.className='cursor';p.append(c);}
+ }
+ document.getElementById('story-keys').textContent=f.keys||' ';
+ document.getElementById('story-output').textContent=f.output||' ';
+ document.getElementById('story-note').textContent=f.note||' ';
+ document.getElementById('story-source').textContent=language==='Russian'?'Cyrillic · Russian Es':'Latin · English Es';
+ document.getElementById('story-bottom').textContent=f.scene<3?'English, Spanish and French share one input source.':'Punctuation uses the same gestures.';
+ // Illustrate one physical Option key, rather than both sides at once.
+ for(const g of document.querySelectorAll('[data-modifier="option"],[data-modifier="shift"]')){
+  g.querySelectorAll('path').forEach((p,i)=>{if(i===1){p.setAttribute('fill','url(#keycap)');p.setAttribute('stroke','#8e9298');}});
+  g.querySelectorAll('text').forEach(t=>t.setAttribute('fill','#686b72'));
+ }
+ if(f.layer==='option'||f.layer==='optionShift')document.querySelector('[data-key="option2"]').classList.add('story-mod');
+ if(f.layer==='shift'||f.layer==='optionShift')document.querySelector('[data-key="shift"]').classList.add('story-mod');
+ if(f.code!==undefined)document.querySelector('[data-code="'+f.code+'"]').classList.add('story-pressed');
+ if(f.globe)document.querySelector('[data-globe]').classList.add('story-pressed');
+ if(f.summary)for(const code of [43,47])document.querySelector('[data-code="'+code+'"]').classList.add('story-pressed');
+ document.getElementById('achievements').innerHTML=badges.map(([id,label])=>'<span class="achievement '+(f.earned.includes(id)?'unlocked':'')+' '+(f.fresh===id?'fresh':'')+'">'+(f.earned.includes(id)?'✓ ':'○ ')+label+'</span>').join('');
+ document.getElementById('number-echo').classList.toggle('verified',Boolean(f.numbers));
+ if(f.numbers)for(const code of [18,19,20,21,23,22,26,28,25,29])document.querySelector('[data-code="'+code+'"]').classList.add('number-row');
+ document.getElementById('endcard').style.display=f.endcard?'flex':'none';
+ return f.duration;
+}
+}
+window.storyReady=prepareStory();
+window.storyReady.then(()=>{
+ if(new URLSearchParams(location.search).has('render'))return;
+ let frame=0;function play(){const duration=showStoryFrame(frame);frame=(frame+1)%storyFrames.length;setTimeout(play,duration);}play();
+});
+</script></body></html>
